@@ -26,14 +26,24 @@ package body Home_Containers.Generic_Vectors is
       return Container.Data'Size;
    end;
 
-   function Get_Reference (C : in out Vector; K : Index) return Accessor is
+   function Get_Reference (Container : in out Vector; K : Index) return Accessor is
    begin
-      return Accessor'(Generic_Vectors_Element => C.Data (K)'Access);
+      return Accessor'(Generic_Vectors_Element => Container.Data (K)'Access);
    end;
 
    function Get_Reference (Container : aliased in out Vector; Position : Cursor) return Accessor is
    begin
       return Accessor'(Generic_Vectors_Element => Container.Data (Position.Index)'Access);
+   end;
+
+   function Get_Constant_Reference (Container : aliased Vector; K  : Index) return Constant_Accessor is
+   begin
+      return Constant_Accessor'(Generic_Vectors_Element => Container.Data (K)'Access);
+   end;
+
+   function Get_Constant_Reference (Container : aliased Vector; Position  : Cursor) return Constant_Accessor is
+   begin
+      return Constant_Accessor'(Generic_Vectors_Element => Container.Data (Position.Index)'Access);
    end;
 
    function First_Element (C : in out Vector) return Accessor is

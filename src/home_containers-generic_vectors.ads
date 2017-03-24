@@ -1,8 +1,6 @@
 with System;
 with Ada.Iterator_Interfaces;
 
-
-
 generic
    type Element is private;
 package Home_Containers.Generic_Vectors is
@@ -17,13 +15,12 @@ package Home_Containers.Generic_Vectors is
 
    subtype Address is System.Address;
 
-   type Base_Index is new Integer;
-   subtype Count is Base_Index range 0 .. Base_Index'Last;
-   subtype Index is Base_Index range 1 .. Base_Index'Last;
+   subtype Base_Index is Count range 0 .. Count'Last;
+   subtype Index is Base_Index range 1 .. Count'Last;
 
    type Vector (Capacity : Count) is tagged private with
      Variable_Indexing => Get_Reference,
-     --Constant_Indexing => Constant_Reference,
+     Constant_Indexing => Get_Constant_Reference,
      Iterator_Element  => Element,
      Default_Iterator  => Iterate;
    type Vector_Access is access all Vector;
@@ -33,10 +30,16 @@ package Home_Containers.Generic_Vectors is
    type Accessor (Generic_Vectors_Element : not null access Element) is private with
      Implicit_Dereference => Generic_Vectors_Element;
 
+   type Constant_Accessor (Generic_Vectors_Element : not null access constant Element) is private with
+     Implicit_Dereference => Generic_Vectors_Element;
+
+
    procedure Empty (Container : out Vector);
 
-   function Get_Reference (C : in out Vector; K : Index) return Accessor;
+   function Get_Reference (Container : in out Vector; K : Index) return Accessor;
    function Get_Reference (Container : aliased in out Vector; Position : Cursor) return Accessor;
+   function Get_Constant_Reference (Container : aliased Vector; K  : Index) return Constant_Accessor;
+   function Get_Constant_Reference (Container : aliased Vector; Position  : Cursor) return Constant_Accessor;
 
    procedure Append (Container : in out Vector);
    procedure Append (Container : in out Vector; New_Item : Element);
@@ -76,5 +79,6 @@ private
    end record;
 
    type Accessor (Generic_Vectors_Element : not null access Element) is null record;
+   type Constant_Accessor (Generic_Vectors_Element : not null access constant Element) is null record;
 
 end;
